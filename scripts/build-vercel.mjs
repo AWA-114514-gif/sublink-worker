@@ -26,7 +26,15 @@ async function buildForVercel() {
         outfile: path.join(outDir, 'createApp.js'),
         platform: 'node',
         sourcemap: isProduction ? false : true,
-        target: ['node18']
+        target: ['node18'],
+        
+        // 👇 关键修改部分开始 👇
+        // 强制将所有依赖（包括 hono）打包进最终文件，而不是作为 external 去 node_modules 找
+        packages: 'bundle', 
+        // 明确告知 esbuild 如何处理 .jsx 文件，使用 hono 的 JSX 运行时
+        jsx: 'automatic',
+        jsxImportSource: 'hono/jsx'
+        // 👆 关键修改部分结束 👆
     });
     console.log('✓ Built dist/vercel/createApp.js for the Vercel runtime');
 }
